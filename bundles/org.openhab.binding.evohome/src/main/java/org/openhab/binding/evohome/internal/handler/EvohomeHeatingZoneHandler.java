@@ -11,7 +11,11 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.evohome.internal.handler;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 
+import org.openhab.core.thing.binding.ThingHandlerService;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.evohome.internal.EvohomeBindingConstants;
@@ -101,7 +105,24 @@ public class EvohomeHeatingZoneHandler extends BaseEvohomeHandler {
             }
         }
     }
+@Override
+public Collection<Class<? extends ThingHandlerService>> getServices() {
+    return List.of(EvohomeActions.class);
+}
 
+public void setTemporarySetPoint(double temperature, Instant timeUntil) {
+    if (!Double.isFinite(temperature) || temperature < 5 || temperature > 35) {
+        throw new IllegalArgumentException("Temperature must be between 5 and 35 °C");
+    }
+    if (!timeUntil.isAfter(Instant.now())) {
+        throw new IllegalArgumentException("End time must be in the future");
+    }
+
+    EvohomeAccountBridgeHandler bridge = getEvohomeBridge();
+    if (bridge != null) {
+        bridge.setTemporarySetPoint(getEvohomeThingConfig().id, temperature, timeUntil);
+    }
+}
     private boolean handleActiveFaults(ZoneStatus zoneStatus) {
         if (zoneStatus.hasActiveFaults()) {
             updateEvohomeThingStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
