@@ -21,6 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.time.Instant;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -138,6 +139,14 @@ public class EvohomeAccountBridgeHandler extends BaseBridgeHandler {
         }
     }
 
+public void setTemporarySetPoint(String zoneId, double setPoint, Instant timeUntil) {
+    EvohomeApiClient localApiClient = apiClient;
+    if (localApiClient != null) {
+        tryToCall(() -> localApiClient.setHeatingZoneOverride(
+                zoneId, setPoint, timeUntil.toString()));
+    }
+}
+    
     public void cancelSetPointOverride(String zoneId) {
         EvohomeApiClient localApiCLient = apiClient;
         if (localApiCLient != null) {
