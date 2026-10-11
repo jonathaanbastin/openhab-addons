@@ -22,25 +22,38 @@ import com.google.gson.annotations.SerializedName;
  */
 public class HeatSetPoint {
 
-    /**
-     * Constructs an override reset
+/**
+     * Constructs a request to follow the schedule.
      */
     HeatSetPoint() {
-        heatSetpointValue = 0.0;
-        setpointMode = "FollowSchedule";
-        timeUntil = null;
+        this(0.0, "FollowSchedule", null);
     }
 
     /**
-     * Constructs a permanent override with the given temperature
+     * Constructs a permanent override.
      *
-     * @param setPoint The target temperature to set the set point to
+     * @param setPoint target temperature
      */
     HeatSetPoint(double setPoint) {
-        // Make sure that the value is rounded toward the nearest 0.5
-        heatSetpointValue = Math.round(setPoint * 2) / 2.0;
-        setpointMode = "PermanentOverride";
-        timeUntil = null;
+        this(setPoint, "PermanentOverride", null);
+    }
+
+    /**
+     * Constructs a temporary override ending at the given time.
+     *
+     * @param setPoint target temperature
+     * @param timeUntil ISO-8601 end time, preferably UTC (for example,
+     *                  {@code 2026-10-11T18:30:00Z})
+     */
+    HeatSetPoint(double setPoint, String timeUntil) {
+        this(setPoint, "TemporaryOverride", timeUntil);
+    }
+
+    private HeatSetPoint(double setPoint, String setpointMode, String timeUntil) {
+        // Preserve the binding's existing half-degree rounding.
+        this.heatSetpointValue = Math.round(setPoint * 2) / 2.0;
+        this.setpointMode = setpointMode;
+        this.timeUntil = timeUntil;
     }
 
     @SuppressWarnings("unused")
