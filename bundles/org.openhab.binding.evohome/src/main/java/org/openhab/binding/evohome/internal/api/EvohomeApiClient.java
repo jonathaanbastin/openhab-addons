@@ -142,6 +142,11 @@ public class EvohomeApiClient {
         apiAccess.doAuthenticatedPut(url, heatSetPoint);
     }
 
+    public void setHeatingZoneOverride(String zoneId, double setPoint, String timeUntil) throws TimeoutException {
+    HeatSetPoint heatSetPoint = new HeatSetPoint(setPoint, timeUntil);
+    setHeatingZoneOverride(zoneId, heatSetPoint);
+}
+
     private @Nullable UserAccount requestUserAccount() throws TimeoutException {
         String url = EvohomeApiConstants.URL_V2_BASE + EvohomeApiConstants.URL_V2_ACCOUNT;
         return apiAccess.doAuthenticatedGet(url, UserAccount.class);
