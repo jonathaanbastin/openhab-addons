@@ -43,6 +43,17 @@ public class HeatSetPoint {
         timeUntil = null;
     }
 
+        /**
+     * Constructs a permanent override with the given temperature and set time
+     *
+     * @param setPoint The target temperature to set the set point to
+     */
+    HeatSetPoint(double setPoint, String timeUntil) {
+        this.heatSetpointValue = Math.round(setPoint * 2) / 2.0;
+        this.setpointMode = "TemporaryOverride";
+        this.timeUntil = timeUntil;
+    }
+
     @SuppressWarnings("unused")
     @SerializedName("heatSetpointValue")
     private double heatSetpointValue;
